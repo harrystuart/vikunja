@@ -144,9 +144,12 @@ DTEND:` + makeCalDavTimeFromTimeStamp(t.End)
 // DESCRIPTION:` + formattedDescription
 // 		}
 		if t.Completed.Unix() > 0 {
-			caldavtodos += `
-COMPLETED:` + makeCalDavTimeFromTimeStamp(t.Completed) + `
-STATUS:COMPLETED`
+			// Only write COMPLETED + STATUS if this is NOT a recurring task
+			if t.RepeatAfter <= 0 && t.RepeatMode != models.TaskRepeatModeMonth {
+				caldavtodos += `
+		COMPLETED:` + makeCalDavTimeFromTimeStamp(t.Completed) + `
+		STATUS:COMPLETED`
+			}
 		}
 		if t.Organizer != nil {
 			caldavtodos += `
